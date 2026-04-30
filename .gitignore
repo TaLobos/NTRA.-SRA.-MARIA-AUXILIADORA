@@ -1,0 +1,16 @@
+# Maven build artifacts
+target/
+*.class
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Spring Boot properties with local overrides
+application-local.properties
