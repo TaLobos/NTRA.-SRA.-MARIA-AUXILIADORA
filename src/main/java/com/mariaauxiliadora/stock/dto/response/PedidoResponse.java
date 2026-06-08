@@ -2,6 +2,7 @@ package com.mariaauxiliadora.stock.dto.response;
 
 import com.mariaauxiliadora.stock.entity.Pedido;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class PedidoResponse {
     private OffsetDateTime fecha;
     private UsuarioResumenResponse usuario;
     private List<DetallePedidoResponse> detalles;
+    private BigDecimal total;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -30,4 +32,7 @@ public class PedidoResponse {
 
     public List<DetallePedidoResponse> getDetalles() { return detalles; }
     public void setDetalles(List<DetallePedidoResponse> detalles) { this.detalles = detalles; }
+
+    public BigDecimal getTotal() { return total; }
+    public void setTotal(BigDecimal total) { this.total = total; }
 }

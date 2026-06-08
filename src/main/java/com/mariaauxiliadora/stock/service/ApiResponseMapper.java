@@ -3,6 +3,7 @@ package com.mariaauxiliadora.stock.service;
 import com.mariaauxiliadora.stock.dto.response.DetallePedidoResponse;
 import com.mariaauxiliadora.stock.dto.response.PedidoResponse;
 import com.mariaauxiliadora.stock.dto.response.ProductoResponse;
+import com.mariaauxiliadora.stock.dto.response.UsuarioResponse;
 import com.mariaauxiliadora.stock.dto.response.UsuarioResumenResponse;
 import com.mariaauxiliadora.stock.entity.DetallePedido;
 import com.mariaauxiliadora.stock.entity.Pedido;
@@ -10,6 +11,7 @@ import com.mariaauxiliadora.stock.entity.Producto;
 import com.mariaauxiliadora.stock.entity.Usuario;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,11 +43,30 @@ public class ApiResponseMapper {
         return response;
     }
 
+    public UsuarioResponse toUsuarioResponse(Usuario usuario) {
+        UsuarioResponse response = new UsuarioResponse();
+        response.setId(usuario.getId());
+        response.setNombre(usuario.getNombre());
+        response.setApellido(usuario.getApellido());
+        response.setOrganizacion(usuario.getOrganizacion());
+        response.setPais(usuario.getPais());
+        response.setProvincia(usuario.getProvincia());
+        response.setCiudad(usuario.getCiudad());
+        response.setDireccion(usuario.getDireccion());
+        response.setCodigoPostal(usuario.getCodigoPostal());
+        response.setEmail(usuario.getEmail());
+        response.setTelefono(usuario.getTelefono());
+        response.setRol(usuario.getRol());
+        return response;
+    }
+
     public DetallePedidoResponse toDetallePedidoResponse(DetallePedido detallePedido) {
         DetallePedidoResponse response = new DetallePedidoResponse();
         response.setId(detallePedido.getId());
         response.setProducto(toProductoResponse(detallePedido.getProducto()));
         response.setCantidad(detallePedido.getCantidad());
+        response.setPrecioUnitario(detallePedido.getPrecioUnitario());
+        response.setSubtotal(detallePedido.getSubtotal());
         return response;
     }
 
@@ -58,6 +79,9 @@ public class ApiResponseMapper {
         response.setDetalles(pedido.getDetalles().stream()
                 .map(this::toDetallePedidoResponse)
                 .collect(Collectors.toList()));
+        response.setTotal(pedido.getDetalles().stream()
+                .map(DetallePedido::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
         return response;
     }
 
@@ -70,6 +94,12 @@ public class ApiResponseMapper {
     public List<ProductoResponse> toProductoResponseList(List<Producto> productos) {
         return productos.stream()
                 .map(this::toProductoResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<UsuarioResponse> toUsuarioResponseList(List<Usuario> usuarios) {
+        return usuarios.stream()
+                .map(this::toUsuarioResponse)
                 .collect(Collectors.toList());
     }
 }

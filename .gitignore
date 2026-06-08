@@ -1,6 +1,7 @@
 # Maven build artifacts
 target/
 *.class
+effective-pom-*.log
 
 # IDE files
 .idea/

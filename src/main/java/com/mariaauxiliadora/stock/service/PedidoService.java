@@ -6,6 +6,7 @@ import com.mariaauxiliadora.stock.entity.DetallePedido;
 import com.mariaauxiliadora.stock.entity.Pedido;
 import com.mariaauxiliadora.stock.entity.Producto;
 import com.mariaauxiliadora.stock.entity.Usuario;
+import com.mariaauxiliadora.stock.exception.OperacionNoPermitidaException;
 import com.mariaauxiliadora.stock.exception.RecursoNoEncontradoException;
 import com.mariaauxiliadora.stock.exception.StockInsuficienteException;
 import com.mariaauxiliadora.stock.repository.PedidoRepository;
@@ -13,6 +14,10 @@ import com.mariaauxiliadora.stock.repository.ProductoRepository;
 import com.mariaauxiliadora.stock.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Lógica de negocio para la gestión de pedidos.
@@ -32,6 +37,25 @@ public class PedidoService {
         this.productoRepository = productoRepository;
     }
 
+    @Transactional(readOnly = true)
+    public List<Pedido> listarPedidos() {
+        return pedidoRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Pedido obtenerPedido(Long pedidoId) {
+        return pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Pedido no encontrado: " + pedidoId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Pedido> listarPedidosPorUsuario(Long usuarioId) {
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new RecursoNoEncontradoException("Usuario no encontrado: " + usuarioId);
+        }
+        return pedidoRepository.findByUsuarioId(usuarioId);
+    }
+
     // ── Crear pedido ──────────────────────────────────────────────────────────
 
     /**
@@ -48,13 +72,24 @@ public class PedidoService {
                         "Usuario no encontrado: " + request.getUsuarioId()));
 
         Pedido pedido = new Pedido(usuario);
+        Map<Long, Integer> cantidadesPorProducto = agruparCantidades(request.getDetalles());
 
-        for (DetallePedidoRequest detalleReq : request.getDetalles()) {
-            Producto producto = productoRepository.findById(detalleReq.getProductoId())
+        for (Map.Entry<Long, Integer> item : cantidadesPorProducto.entrySet()) {
+            Producto producto = productoRepository.findById(item.getKey())
                     .orElseThrow(() -> new RecursoNoEncontradoException(
-                            "Producto no encontrado: " + detalleReq.getProductoId()));
+                            "Producto no encontrado: " + item.getKey()));
+            int cantidadSolicitada = item.getValue();
 
-            pedido.addDetalle(new DetallePedido(producto, detalleReq.getCantidad()));
+            if (producto.getStockQuantity() < cantidadSolicitada) {
+                throw new StockInsuficienteException(
+                        String.format(
+                                "Stock insuficiente para '%s': disponible=%d, solicitado=%d",
+                                producto.getNombre(),
+                                producto.getStockQuantity(),
+                                cantidadSolicitada));
+            }
+
+            pedido.addDetalle(new DetallePedido(producto, cantidadSolicitada));
         }
 
         return pedidoRepository.save(pedido);
@@ -76,9 +111,12 @@ public class PedidoService {
      */
     @Transactional
     public Pedido cambiarEstado(Long pedidoId, Pedido.Estado nuevoEstado) {
-        Pedido pedido = pedidoRepository.findById(pedidoId)
-                .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "Pedido no encontrado: " + pedidoId));
+        Pedido pedido = obtenerPedido(pedidoId);
+
+        if (pedido.getEstado() != Pedido.Estado.PENDIENTE) {
+            throw new OperacionNoPermitidaException(
+                    "Solo se puede cambiar el estado de pedidos pendientes");
+        }
 
         if (nuevoEstado == Pedido.Estado.ACEPTADO) {
             descontarStock(pedido);
@@ -115,5 +153,13 @@ public class PedidoService {
             // JPA dirty-checking persistirá este cambio al confirmar la transacción.
             producto.setStockQuantity(stockActual - cantidadPedida);
         }
+    }
+
+    private Map<Long, Integer> agruparCantidades(List<DetallePedidoRequest> detalles) {
+        Map<Long, Integer> cantidadesPorProducto = new LinkedHashMap<>();
+        for (DetallePedidoRequest detalle : detalles) {
+            cantidadesPorProducto.merge(detalle.getProductoId(), detalle.getCantidad(), Integer::sum);
+        }
+        return cantidadesPorProducto;
     }
 }

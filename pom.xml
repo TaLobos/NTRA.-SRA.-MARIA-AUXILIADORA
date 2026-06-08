@@ -19,7 +19,7 @@
     <description>Gestión de stock y pedidos — Ntra. Sra. María Auxiliadora</description>
 
     <properties>
-        <java.version>25</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <!-- Spring Web -->
@@ -74,7 +74,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>25</release>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
             <plugin>
