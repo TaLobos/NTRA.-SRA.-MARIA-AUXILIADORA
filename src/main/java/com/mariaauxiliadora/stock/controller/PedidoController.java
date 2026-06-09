@@ -46,6 +46,7 @@ public class PedidoController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PedidoResponse>> listarPedidosPorUsuario(@PathVariable Long usuarioId) {
         return ResponseEntity.ok(apiResponseMapper.toPedidoResponseList(pedidoService.listarPedidosPorUsuario(usuarioId)));
     }

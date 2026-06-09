@@ -35,13 +35,20 @@ public class UsuarioService {
 
     @Transactional
     public Usuario crearCliente(UsuarioRequest request) {
-        usuarioRepository.findByEmail(request.getEmail()).ifPresent(usuario -> {
-            throw new OperacionNoPermitidaException("Ya existe un usuario con el email: " + request.getEmail());
-        });
+        return usuarioRepository.findByEmail(request.getEmail())
+                .map(usuario -> actualizarDatosUsuarioExistente(usuario, request))
+                .orElseGet(() -> crearUsuarioNuevo(request));
+    }
 
+    private Usuario crearUsuarioNuevo(UsuarioRequest request) {
         Usuario usuario = new Usuario();
         aplicarRequest(usuario, request);
         usuario.setRol(Usuario.Rol.CLIENTE);
+        return usuarioRepository.save(usuario);
+    }
+
+    private Usuario actualizarDatosUsuarioExistente(Usuario usuario, UsuarioRequest request) {
+        aplicarRequest(usuario, request);
         return usuarioRepository.save(usuario);
     }
 

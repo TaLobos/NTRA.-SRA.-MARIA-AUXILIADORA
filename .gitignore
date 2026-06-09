@@ -15,3 +15,5 @@ Thumbs.db
 
 # Spring Boot properties with local overrides
 application-local.properties
+node_modules
+__pycache__/

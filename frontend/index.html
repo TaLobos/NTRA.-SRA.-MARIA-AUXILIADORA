@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arte Sacro | Ntra. Sra. Maria Auxiliadora</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#catalogo" aria-label="Arte Sacro">
+        <span class="brand-mark">✝</span>
+        <span>
+          <strong>ARTE SACRO</strong>
+          <small>Tienda de Articulos Religiosos</small>
+        </span>
+      </a>
+      <nav class="nav">
+        <button class="nav-link active" data-view="catalog">Catalogo</button>
+        <button class="nav-link" data-view="about">Quienes somos</button>
+        <button class="nav-link" data-view="contact">Contacto</button>
+      </nav>
+      <div class="top-actions">
+        <button class="icon-button" id="cartButton" type="button">
+          <span>🛒</span>
+          <span>Mi pedido</span>
+          <b id="cartCount">0</b>
+        </button>
+        <button class="icon-button" id="accountButton" type="button">
+          <span aria-hidden="true">👤</span>
+          <span>Crear cuenta</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="catalog-view" id="catalogView">
+        <div class="page-heading">
+          <h1>Catalogo de Arte Sacro</h1>
+          <div class="ornament"><span></span><b>✝</b><span></span></div>
+        </div>
+
+        <div class="filters">
+          <label class="search">
+            <span>Buscar</span>
+            <input id="searchInput" type="search" placeholder="Virgen, cruz, rosario..." />
+          </label>
+          <label>
+            <span>Categoria</span>
+            <select id="categoryFilter"></select>
+          </label>
+          <label class="check-row">
+            <input id="onlyStock" type="checkbox" />
+            <span>Solo con stock</span>
+          </label>
+        </div>
+
+        <div class="status-line" id="statusLine">Cargando productos...</div>
+        <section class="product-grid" id="productGrid" aria-live="polite"></section>
+      </section>
+
+      <section class="content-view hidden" id="aboutView">
+        <h1>Ntra. Sra. Maria Auxiliadora</h1>
+        <p>Trabajamos piezas de arte sacro para comunidades religiosas, santuarios, parroquias y devocion particular.</p>
+      </section>
+
+      <section class="content-view hidden" id="contactView">
+        <h1>Contacto</h1>
+        <p>Para consultas o pedidos especiales, comunicate con el santuario. Esta pantalla se completara con los datos definitivos.</p>
+      </section>
+
+      <section class="trust-band">
+        <div><span>▣</span><strong>Productos de calidad</strong><small>Seleccionados para tu comunidad</small></div>
+        <div><span>▤</span><strong>Envios seguros</strong><small>A todo el pais</small></div>
+        <div><span>☏</span><strong>Atencion personalizada</strong><small>Estamos para asesorarte</small></div>
+      </section>
+    </main>
+
+    <aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
+      <div class="drawer-panel">
+        <header>
+          <h2>Mi pedido</h2>
+          <button class="ghost-button" id="closeCart" type="button" aria-label="Cerrar">×</button>
+        </header>
+        <div class="cart-items" id="cartItems"></div>
+        <footer class="cart-footer">
+          <div class="total-row">
+            <span>Total</span>
+            <strong id="cartTotal">$ 0</strong>
+          </div>
+          <button class="primary-button" id="sendOrderButton" type="button">Enviar pedido al santuario</button>
+        </footer>
+      </div>
+    </aside>
+
+    <section class="modal hidden" id="checkoutModal" role="dialog" aria-modal="true">
+      <form class="modal-card" id="checkoutForm">
+        <button class="ghost-button modal-close" type="button" data-close-modal>×</button>
+        <h2>Datos del comprador</h2>
+        <div class="form-grid">
+          <label>Nombre<input name="nombre" required /></label>
+          <label>Apellido<input name="apellido" required /></label>
+          <label>Email<input name="email" type="email" required /></label>
+          <label>Telefono<input name="telefono" /></label>
+          <label>Pais<input name="pais" value="Argentina" required /></label>
+          <label>Provincia<input name="provincia" required /></label>
+          <label>Ciudad<input name="ciudad" required /></label>
+          <label>Codigo postal<input name="codigoPostal" required /></label>
+          <label class="full">Direccion<input name="direccion" required /></label>
+          <label class="full">Organizacion<input name="organizacion" placeholder="Parroquia, santuario o particular" /></label>
+        </div>
+        <button class="primary-button" type="submit">Confirmar pedido</button>
+      </form>
+    </section>
+
+    <section class="modal hidden" id="successModal" role="dialog" aria-modal="true">
+      <div class="modal-card compact">
+        <div class="success-icon">✓</div>
+        <h2>Pedido enviado al santuario</h2>
+        <p>Recibimos tu solicitud. Te contactaremos para confirmar disponibilidad y entrega.</p>
+        <button class="primary-button" type="button" data-close-success>Aceptar</button>
+      </div>
+    </section>
+
+    <section class="admin-shell hidden" id="adminView">
+      <aside class="admin-sidebar">
+        <div class="admin-brand"><span>✝</span><b>ARTE SACRO</b><small>Panel de Administracion</small></div>
+        <button class="admin-tab active" data-admin-tab="orders">Pedidos</button>
+        <button class="admin-tab" data-admin-tab="products">Productos</button>
+        <button class="admin-tab" data-admin-tab="catalog">Volver al catalogo</button>
+        <div class="admin-user">TL<br /><small>Administrador</small></div>
+      </aside>
+      <main class="admin-main">
+        <section id="adminOrders">
+          <h1>Gestion de Pedidos</h1>
+          <p>Administra los pedidos realizados.</p>
+          <div class="admin-order-detail hidden" id="adminOrderDetail"></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Comprador</th><th>Fecha</th><th>Estado</th><th>Total</th><th>Acciones</th></tr></thead>
+              <tbody id="ordersTable"></tbody>
+            </table>
+          </div>
+        </section>
+        <section id="adminProducts" class="hidden">
+          <h1>Productos</h1>
+          <p>Actualiza stock e imagen principal. Las imagenes pueden venir de Supabase Storage o de una URL externa.</p>
+          <div class="admin-product-editor hidden" id="adminProductEditor"></div>
+          <div class="admin-toolbar">
+            <input id="adminProductSearch" placeholder="Buscar producto..." />
+            <button class="secondary-button" id="reloadProducts" type="button">Recargar</button>
+          </div>
+          <div class="product-admin-list" id="adminProductList"></div>
+        </section>
+      </main>
+    </section>
+
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -29,7 +29,7 @@ public class ProductoRequest {
     private Integer stockQuantity;
 
     @NotEmpty
-    @Size(min = 2, max = 2)
+    @Size(min = 1, max = 8)
     private List<@NotBlank String> fotos;
 
     @NotEmpty
