@@ -7,6 +7,7 @@ import com.mariaauxiliadora.stock.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,5 +51,12 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponse> actualizarUsuario(@PathVariable Long id,
                                                              @Valid @RequestBody UsuarioRequest request) {
         return ResponseEntity.ok(apiResponseMapper.toUsuarioResponse(usuarioService.actualizarUsuario(id, request)));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> borrarUsuario(@PathVariable Long id, Authentication authentication) {
+        usuarioService.borrarUsuario(id, authentication.getName());
+        return ResponseEntity.noContent().build();
     }
 }

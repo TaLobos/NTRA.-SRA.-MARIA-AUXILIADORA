@@ -3,6 +3,7 @@ package com.mariaauxiliadora.stock.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.mariaauxiliadora.stock.entity.Usuario;
 
 /**
  * Datos necesarios para registrar o actualizar un cliente.
@@ -48,6 +49,8 @@ public class UsuarioRequest {
     @Size(max = 30)
     private String telefono;
 
+    private Usuario.Rol rol;
+
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
@@ -77,4 +80,7 @@ public class UsuarioRequest {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
+
+    public Usuario.Rol getRol() { return rol; }
+    public void setRol(Usuario.Rol rol) { this.rol = rol; }
 }

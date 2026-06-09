@@ -3,12 +3,15 @@ package com.mariaauxiliadora.stock.controller;
 import com.mariaauxiliadora.stock.dto.EstadoRequest;
 import com.mariaauxiliadora.stock.dto.PedidoRequest;
 import com.mariaauxiliadora.stock.dto.response.PedidoResponse;
+import com.mariaauxiliadora.stock.entity.Pedido;
 import com.mariaauxiliadora.stock.service.ApiResponseMapper;
 import com.mariaauxiliadora.stock.service.PedidoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,9 +49,21 @@ public class PedidoController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<PedidoResponse>> listarPedidosPorUsuario(@PathVariable Long usuarioId) {
-        return ResponseEntity.ok(apiResponseMapper.toPedidoResponseList(pedidoService.listarPedidosPorUsuario(usuarioId)));
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENTE')")
+    public ResponseEntity<List<PedidoResponse>> listarPedidosPorUsuario(@PathVariable Long usuarioId,
+                                                                        Authentication authentication) {
+        List<Pedido> pedidos = pedidoService.listarPedidosPorUsuario(usuarioId);
+        boolean admin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
+        if (!admin) {
+            String email = authentication.getName();
+            boolean ownOrders = pedidos.stream()
+                    .allMatch(pedido -> pedido.getUsuario().getEmail().equalsIgnoreCase(email));
+            if (!ownOrders) {
+                throw new AccessDeniedException("No puede consultar pedidos de otro usuario");
+            }
+        }
+        return ResponseEntity.ok(apiResponseMapper.toPedidoResponseList(pedidos));
     }
 
     /**

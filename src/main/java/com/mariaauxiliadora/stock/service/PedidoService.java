@@ -118,8 +118,9 @@ public class PedidoService {
                     "Solo se puede cambiar el estado de pedidos pendientes");
         }
 
-        if (nuevoEstado == Pedido.Estado.ACEPTADO) {
-            descontarStock(pedido);
+        if (nuevoEstado == Pedido.Estado.ACEPTADO && !descontarStock(pedido)) {
+            pedido.setEstado(Pedido.Estado.RECHAZADO);
+            return pedidoRepository.save(pedido);
         }
 
         pedido.setEstado(nuevoEstado);
@@ -137,22 +138,22 @@ public class PedidoService {
      * por lo que JPA persiste automáticamente los cambios al hacer commit; no es
      * necesario llamar a {@code save()} explícitamente en cada iteración.</p>
      */
-    private void descontarStock(Pedido pedido) {
+    private boolean descontarStock(Pedido pedido) {
         for (DetallePedido detalle : pedido.getDetalles()) {
-            Producto producto = detalle.getProducto();
+            Producto producto = productoRepository.findByIdForUpdate(detalle.getProducto().getId())
+                    .orElseThrow(() -> new RecursoNoEncontradoException(
+                            "Producto no encontrado: " + detalle.getProducto().getId()));
             int stockActual    = producto.getStockQuantity();
             int cantidadPedida = detalle.getCantidad();
 
             if (stockActual < cantidadPedida) {
-                throw new StockInsuficienteException(
-                        String.format(
-                                "Stock insuficiente para '%s': disponible=%d, solicitado=%d",
-                                producto.getNombre(), stockActual, cantidadPedida));
+                return false;
             }
 
             // JPA dirty-checking persistirá este cambio al confirmar la transacción.
             producto.setStockQuantity(stockActual - cantidadPedida);
         }
+        return true;
     }
 
     private Map<Long, Integer> agruparCantidades(List<DetallePedidoRequest> detalles) {

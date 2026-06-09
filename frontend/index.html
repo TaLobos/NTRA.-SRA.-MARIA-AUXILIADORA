@@ -3,24 +3,58 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arte Sacro | Ntra. Sra. Maria Auxiliadora</title>
+    <title>Arte Sacro | Ntra. Sra. María Auxiliadora</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <div class="catalog-atmosphere" aria-hidden="true">
+      <div class="light-particles"></div>
+      <svg class="rosary-frame rosary-left" viewBox="0 0 90 760" role="img">
+        <path class="rosary-chain" d="M46 0 C32 72 30 132 46 204 C63 279 63 345 46 420 C30 494 30 566 46 642" />
+        <g class="rosary-beads">
+          <circle cx="46" cy="38" r="5" /><circle cx="39" cy="76" r="5" /><circle cx="36" cy="116" r="5" />
+          <circle cx="40" cy="156" r="5" /><circle cx="48" cy="198" r="5" /><circle cx="56" cy="240" r="5" />
+          <circle cx="59" cy="282" r="5" /><circle cx="56" cy="324" r="5" /><circle cx="48" cy="366" r="5" />
+          <circle cx="40" cy="408" r="5" /><circle cx="35" cy="452" r="5" /><circle cx="35" cy="496" r="5" />
+          <circle cx="41" cy="540" r="5" /><circle cx="48" cy="584" r="5" /><circle cx="51" cy="626" r="5" />
+        </g>
+        <circle class="rosary-medal" cx="48" cy="666" r="11" />
+        <path class="rosary-cross" d="M48 684v48M31 703h34" />
+        <path class="rosary-cross" d="M39 732h18M39 684h18" />
+      </svg>
+      <svg class="rosary-frame rosary-right" viewBox="0 0 90 760" role="img">
+        <path class="rosary-chain" d="M46 0 C32 72 30 132 46 204 C63 279 63 345 46 420 C30 494 30 566 46 642" />
+        <g class="rosary-beads">
+          <circle cx="46" cy="38" r="5" /><circle cx="39" cy="76" r="5" /><circle cx="36" cy="116" r="5" />
+          <circle cx="40" cy="156" r="5" /><circle cx="48" cy="198" r="5" /><circle cx="56" cy="240" r="5" />
+          <circle cx="59" cy="282" r="5" /><circle cx="56" cy="324" r="5" /><circle cx="48" cy="366" r="5" />
+          <circle cx="40" cy="408" r="5" /><circle cx="35" cy="452" r="5" /><circle cx="35" cy="496" r="5" />
+          <circle cx="41" cy="540" r="5" /><circle cx="48" cy="584" r="5" /><circle cx="51" cy="626" r="5" />
+        </g>
+        <circle class="rosary-medal" cx="48" cy="666" r="11" />
+        <path class="rosary-cross" d="M48 684v48M31 703h34" />
+        <path class="rosary-cross" d="M39 732h18M39 684h18" />
+      </svg>
+    </div>
     <header class="topbar">
       <a class="brand" href="#catalogo" aria-label="Arte Sacro">
         <span class="brand-mark">✝</span>
         <span>
           <strong>ARTE SACRO</strong>
-          <small>Tienda de Articulos Religiosos</small>
+          <small>Tienda de Artículos Religiosos</small>
         </span>
       </a>
       <nav class="nav">
-        <button class="nav-link active" data-view="catalog">Catalogo</button>
-        <button class="nav-link" data-view="about">Quienes somos</button>
+        <button class="nav-link active" data-view="catalog">Catálogo</button>
+        <button class="nav-link" data-view="about">Quiénes somos</button>
         <button class="nav-link" data-view="contact">Contacto</button>
       </nav>
       <div class="top-actions">
+        <button class="icon-button notification-button" id="notificationButton" type="button" aria-label="Notificaciones">
+          <span aria-hidden="true">&#128276;</span>
+          <span>Avisos</span>
+          <b id="notificationCount">0</b>
+        </button>
         <button class="icon-button" id="cartButton" type="button">
           <span>🛒</span>
           <span>Mi pedido</span>
@@ -28,16 +62,20 @@
         </button>
         <button class="icon-button" id="accountButton" type="button">
           <span aria-hidden="true">👤</span>
-          <span>Crear cuenta</span>
+          <span>Ingresar</span>
         </button>
       </div>
     </header>
 
     <main>
       <section class="catalog-view" id="catalogView">
+        <div class="catalog-window" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
         <div class="page-heading">
-          <h1>Catalogo de Arte Sacro</h1>
+          <h1>Catálogo de Arte Sacro</h1>
           <div class="ornament"><span></span><b>✝</b><span></span></div>
+          <p class="bible-quote">"Que el Dios de la esperanza los llene de alegría y paz." Romanos 15:13</p>
         </div>
 
         <div class="filters">
@@ -46,7 +84,7 @@
             <input id="searchInput" type="search" placeholder="Virgen, cruz, rosario..." />
           </label>
           <label>
-            <span>Categoria</span>
+            <span>Categoría</span>
             <select id="categoryFilter"></select>
           </label>
           <label class="check-row">
@@ -55,13 +93,14 @@
           </label>
         </div>
 
+        <div class="catalog-halo" aria-hidden="true"></div>
         <div class="status-line" id="statusLine">Cargando productos...</div>
         <section class="product-grid" id="productGrid" aria-live="polite"></section>
       </section>
 
       <section class="content-view hidden" id="aboutView">
-        <h1>Ntra. Sra. Maria Auxiliadora</h1>
-        <p>Trabajamos piezas de arte sacro para comunidades religiosas, santuarios, parroquias y devocion particular.</p>
+        <h1>Ntra. Sra. María Auxiliadora</h1>
+        <p>Trabajamos piezas de arte sacro para comunidades religiosas, santuarios, parroquias y devoción particular.</p>
       </section>
 
       <section class="content-view hidden" id="contactView">
@@ -71,8 +110,8 @@
 
       <section class="trust-band">
         <div><span>▣</span><strong>Productos de calidad</strong><small>Seleccionados para tu comunidad</small></div>
-        <div><span>▤</span><strong>Envios seguros</strong><small>A todo el pais</small></div>
-        <div><span>☏</span><strong>Atencion personalizada</strong><small>Estamos para asesorarte</small></div>
+        <div><span>▤</span><strong>Envíos seguros</strong><small>A todo el país</small></div>
+        <div><span>☏</span><strong>Atención personalizada</strong><small>Estamos para asesorarte</small></div>
       </section>
     </main>
 
@@ -93,6 +132,13 @@
       </div>
     </aside>
 
+    <section class="notification-panel hidden" id="notificationPanel" aria-live="polite">
+      <header>
+        <strong>Avisos</strong>
+      </header>
+      <div id="notificationList"></div>
+    </section>
+
     <section class="modal hidden" id="checkoutModal" role="dialog" aria-modal="true">
       <form class="modal-card" id="checkoutForm">
         <button class="ghost-button modal-close" type="button" data-close-modal>×</button>
@@ -101,12 +147,12 @@
           <label>Nombre<input name="nombre" required /></label>
           <label>Apellido<input name="apellido" required /></label>
           <label>Email<input name="email" type="email" required /></label>
-          <label>Telefono<input name="telefono" /></label>
-          <label>Pais<input name="pais" value="Argentina" required /></label>
+          <label>Teléfono<input name="telefono" /></label>
+          <label>País<input name="pais" value="Argentina" required /></label>
           <label>Provincia<input name="provincia" required /></label>
           <label>Ciudad<input name="ciudad" required /></label>
-          <label>Codigo postal<input name="codigoPostal" required /></label>
-          <label class="full">Direccion<input name="direccion" required /></label>
+          <label>Código postal<input name="codigoPostal" required /></label>
+          <label class="full">Dirección<input name="direccion" required /></label>
           <label class="full">Organizacion<input name="organizacion" placeholder="Parroquia, santuario o particular" /></label>
         </div>
         <button class="primary-button" type="submit">Confirmar pedido</button>
@@ -124,17 +170,41 @@
 
     <section class="admin-shell hidden" id="adminView">
       <aside class="admin-sidebar">
-        <div class="admin-brand"><span>✝</span><b>ARTE SACRO</b><small>Panel de Administracion</small></div>
-        <button class="admin-tab active" data-admin-tab="orders">Pedidos</button>
+        <div class="admin-brand"><span>✝</span><b>ARTE SACRO</b><small>Panel de Administración</small></div>
+        <button class="admin-tab active" data-admin-tab="dashboard">Dashboard</button>
+        <button class="admin-tab" data-admin-tab="orders">Pedidos</button>
         <button class="admin-tab" data-admin-tab="products">Productos</button>
+        <button class="admin-tab" data-admin-tab="categories">Categorías</button>
+        <button class="admin-tab" data-admin-tab="users">Usuarios</button>
+        <button class="admin-tab" data-admin-tab="audit">Auditoría</button>
         <button class="admin-tab" data-admin-tab="catalog">Volver al catalogo</button>
         <div class="admin-user">TL<br /><small>Administrador</small></div>
       </aside>
       <main class="admin-main">
-        <section id="adminOrders">
-          <h1>Gestion de Pedidos</h1>
+        <section id="adminDashboard"></section>
+        <section id="adminOrders" class="hidden">
+          <h1>Gestión de Pedidos</h1>
           <p>Administra los pedidos realizados.</p>
-          <div class="admin-order-detail hidden" id="adminOrderDetail"></div>
+          <div class="admin-order-filters">
+            <label>Buscar
+              <input id="orderSearch" type="search" placeholder="Nombre, mail, lugar o ID..." />
+            </label>
+            <label>Estado
+              <select id="orderStatusFilter">
+                <option value="">Todos</option>
+                <option value="PENDIENTE">Pendientes</option>
+                <option value="ACEPTADO">Aceptados</option>
+                <option value="RECHAZADO">Rechazados</option>
+              </select>
+            </label>
+            <label>Mes
+              <select id="orderMonthFilter"></select>
+            </label>
+            <label>Ubicación
+              <select id="orderLocationFilter"></select>
+            </label>
+            <button class="secondary-button" id="clearOrderFilters" type="button">Limpiar filtros</button>
+          </div>
           <div class="table-wrap">
             <table>
               <thead><tr><th>ID</th><th>Comprador</th><th>Fecha</th><th>Estado</th><th>Total</th><th>Acciones</th></tr></thead>
@@ -151,6 +221,34 @@
             <button class="secondary-button" id="reloadProducts" type="button">Recargar</button>
           </div>
           <div class="product-admin-list" id="adminProductList"></div>
+        </section>
+        <section id="adminCategories" class="hidden">
+          <h1>Categorías</h1>
+          <p>Administra las categorías que se muestran en el filtro del catálogo.</p>
+          <div class="admin-category-editor">
+            <input id="newCategoryName" placeholder="Nueva categoria..." />
+            <button class="primary-button" type="button" id="addCategoryButton">Agregar categoria</button>
+          </div>
+          <div class="category-admin-list" id="adminCategoryList"></div>
+        </section>
+        <section id="adminUsers" class="hidden">
+          <h1>Usuarios</h1>
+          <p>Consulta datos, historial de pedidos y permisos de cada usuario registrado.</p>
+          <div class="admin-toolbar">
+            <input id="adminUserSearch" placeholder="Buscar usuario, mail, ciudad..." />
+            <button class="secondary-button" id="reloadUsers" type="button">Recargar</button>
+          </div>
+          <div class="user-admin-list" id="adminUserList"></div>
+        </section>
+        <section id="adminAudit" class="hidden">
+          <h1>Auditoría</h1>
+          <p>Registro de movimientos realizados por administradores y super admin.</p>
+          <div class="table-wrap">
+            <table class="audit-table">
+              <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Detalle</th><th>Objetivo</th></tr></thead>
+              <tbody id="auditTable"></tbody>
+            </table>
+          </div>
         </section>
       </main>
     </section>

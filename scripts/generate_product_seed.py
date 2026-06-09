@@ -57,6 +57,34 @@ def sql_quote(value):
     return "'" + str(value).replace("'", "''") + "'"
 
 
+def generated_description(name):
+    upper = ascii_text(name).upper()
+    if "ESPIRITU" in upper:
+        quote = "El Espiritu viene en ayuda de nuestra debilidad. Romanos 8:26"
+    elif "MARIA" in upper or "VIRGEN" in upper or "ROSA" in upper:
+        quote = "Hagan todo lo que el les diga. Juan 2:5"
+    elif "FAMILIA" in upper:
+        quote = "Yo y mi casa serviremos al Senor. Josue 24:15"
+    elif "CRISTO" in upper or "CRUZ" in upper:
+        quote = "Por sus heridas fuimos sanados. Isaias 53:5"
+    else:
+        quote = "Que el Dios de la esperanza los llene de alegria y paz. Romanos 15:13"
+    return f"{ascii_text(name)} es una pieza de arte sacro para acompanar la oracion y la vida de fe. {quote}"
+
+
+def features_for(section):
+    features = []
+    clean_section = ascii_text(section)
+    if clean_section.startswith("Tamano:"):
+        features.append("Categoria: Imagenes religiosas")
+        features.append(clean_section.replace("Tamano:", "Medida:").strip())
+    elif clean_section:
+        features.append(f"Categoria: {clean_section.replace('Categoria:', '').strip()}")
+    if not features:
+        features.append("Categoria: General")
+    return features
+
+
 def main():
     all_pairs = {}
     prices = {}
@@ -89,7 +117,7 @@ def main():
         if key not in prices:
             missing.append(key)
             continue
-        display_name = f"{name} ({section})" if section else name
+        display_name = name
         products.append((display_name, section, prices[key]))
 
     lines = [
@@ -110,7 +138,7 @@ def main():
     value_lines = []
     for display_name, section, price in products:
         value_lines.append(
-            f"    ({sql_quote(ascii_text(display_name))}, {sql_quote(ascii_text(section))}, {price})"
+            f"    ({sql_quote(ascii_text(display_name))}, {sql_quote(generated_description(display_name))}, {price})"
         )
     lines.append(",\n".join(value_lines))
     lines.append(")")
@@ -138,11 +166,11 @@ def main():
         frontend_seed.append({
             "id": index,
             "nombre": ascii_text(display_name),
-            "descripcion": ascii_text(section),
+            "descripcion": generated_description(display_name),
             "precio": float(price),
             "stockQuantity": 0,
             "fotos": ["https://placehold.co/900x700/f1e5d1/9a650c?text=Arte+Sacro"],
-            "caracteristicas": [ascii_text(section)] if section else ["Categoria: General"],
+            "caracteristicas": features_for(section),
         })
 
     frontend_output = os.path.join(ROOT, "frontend", "products.seed.json")

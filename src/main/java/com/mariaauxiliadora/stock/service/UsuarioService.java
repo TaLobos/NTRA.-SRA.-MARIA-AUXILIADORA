@@ -16,6 +16,8 @@ import java.util.List;
 @Service
 public class UsuarioService {
 
+    private static final String SUPER_ADMIN_EMAIL = "tomas.alberto.lobos123@gmail.com";
+
     private final UsuarioRepository usuarioRepository;
 
     public UsuarioService(UsuarioRepository usuarioRepository) {
@@ -42,13 +44,13 @@ public class UsuarioService {
 
     private Usuario crearUsuarioNuevo(UsuarioRequest request) {
         Usuario usuario = new Usuario();
-        aplicarRequest(usuario, request);
+        aplicarRequest(usuario, request, false);
         usuario.setRol(Usuario.Rol.CLIENTE);
         return usuarioRepository.save(usuario);
     }
 
     private Usuario actualizarDatosUsuarioExistente(Usuario usuario, UsuarioRequest request) {
-        aplicarRequest(usuario, request);
+        aplicarRequest(usuario, request, false);
         return usuarioRepository.save(usuario);
     }
 
@@ -61,11 +63,26 @@ public class UsuarioService {
                     throw new OperacionNoPermitidaException("Ya existe un usuario con el email: " + request.getEmail());
                 });
 
-        aplicarRequest(usuario, request);
+        aplicarRequest(usuario, request, true);
         return usuarioRepository.save(usuario);
     }
 
-    private void aplicarRequest(Usuario usuario, UsuarioRequest request) {
+    @Transactional
+    public void borrarUsuario(Long id, String actorEmail) {
+        Usuario usuario = obtenerUsuario(id);
+        String targetEmail = usuario.getEmail() == null ? "" : usuario.getEmail().toLowerCase();
+        String actor = actorEmail == null ? "" : actorEmail.toLowerCase();
+        boolean actorIsSuperAdmin = SUPER_ADMIN_EMAIL.equals(actor);
+        if (SUPER_ADMIN_EMAIL.equals(targetEmail)) {
+            throw new OperacionNoPermitidaException("La cuenta super admin no se puede borrar.");
+        }
+        if (!actorIsSuperAdmin && usuario.getRol() == Usuario.Rol.ADMIN) {
+            throw new OperacionNoPermitidaException("Los administradores solo pueden borrar clientes.");
+        }
+        usuarioRepository.delete(usuario);
+    }
+
+    private void aplicarRequest(Usuario usuario, UsuarioRequest request, boolean permiteCambiarRol) {
         usuario.setNombre(request.getNombre());
         usuario.setApellido(request.getApellido());
         usuario.setOrganizacion(request.getOrganizacion());
@@ -76,5 +93,8 @@ public class UsuarioService {
         usuario.setCodigoPostal(request.getCodigoPostal());
         usuario.setEmail(request.getEmail());
         usuario.setTelefono(request.getTelefono());
+        if (permiteCambiarRol && request.getRol() != null) {
+            usuario.setRol(request.getRol());
+        }
     }
 }
