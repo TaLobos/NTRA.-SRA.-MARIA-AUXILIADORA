@@ -16,7 +16,14 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; }
+html { min-height: 100%; }
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 button, input, select { font: inherit; }
 button { cursor: pointer; }
 
@@ -81,7 +88,14 @@ button { cursor: pointer; }
   font-size: 12px;
 }
 
-main { max-width: 1560px; margin: 0 auto; }
+main {
+  width: 100%;
+  max-width: 1560px;
+  min-height: calc(100vh - 78px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
 .catalog-view { padding: 58px 32px 54px; }
 .page-heading h1, .content-view h1, .admin-main h1 {
   margin: 0;
@@ -223,6 +237,7 @@ main { max-width: 1560px; margin: 0 auto; }
 .ghost-button { border: 0; background: transparent; font-size: 28px; line-height: 1; }
 
 .trust-band {
+  margin-top: auto;
   border-top: 1px solid var(--line);
   background: #f6f1e8;
   display: grid;
