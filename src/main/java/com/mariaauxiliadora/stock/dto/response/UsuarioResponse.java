@@ -1,72 +1,27 @@
-package com.mariaauxiliadora.stock.entity;
+package com.mariaauxiliadora.stock.dto.response;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import com.mariaauxiliadora.stock.entity.Usuario;
 
 /**
- * Usuario registrado en el sistema (ADMIN o CLIENTE).
+ * Vista completa de un usuario para la API.
  */
-@Entity
-@Table(name = "usuarios")
-public class Usuario {
+public class UsuarioResponse {
 
-    public enum Rol { ADMIN, CLIENTE }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank
-    @Column(nullable = false, length = 100)
     private String nombre;
-
-    @NotBlank
-    @Column(nullable = false, length = 100)
     private String apellido;
-
-    @Column(length = 255)
     private String organizacion;
-
-    @NotBlank
-    @Column(nullable = false, length = 100)
     private String pais;
-
-    @NotBlank
-    @Column(nullable = false, length = 100)
     private String provincia;
-
-    @NotBlank
-    @Column(nullable = false, length = 100)
     private String ciudad;
-
-    @NotBlank
-    @Column(nullable = false, length = 255)
     private String direccion;
-
-    @NotBlank
-    @Column(name = "codigo_postal", nullable = false, length = 20)
     private String codigoPostal;
-
-    @Email
-    @NotBlank
-    @Column(nullable = false, unique = true, length = 255)
     private String email;
-
-    @Column(length = 30)
     private String telefono;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private Rol rol = Rol.CLIENTE;
-
-    // ── Constructors ──────────────────────────────────────────────────────────
-
-    public Usuario() {}
-
-    // ── Getters & Setters ─────────────────────────────────────────────────────
+    private Usuario.Rol rol;
 
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -98,6 +53,6 @@ public class Usuario {
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
 
-    public Rol getRol() { return rol; }
-    public void setRol(Rol rol) { this.rol = rol; }
+    public Usuario.Rol getRol() { return rol; }
+    public void setRol(Usuario.Rol rol) { this.rol = rol; }
 }

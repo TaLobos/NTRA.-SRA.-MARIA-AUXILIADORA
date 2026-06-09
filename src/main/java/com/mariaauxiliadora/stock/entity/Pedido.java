@@ -27,8 +27,7 @@ public class Pedido {
     private Usuario usuario;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 15,
-            columnDefinition = "estado_pedido")
+    @Column(nullable = false, length = 15)
     private Estado estado = Estado.PENDIENTE;
 
     @Column(nullable = false)

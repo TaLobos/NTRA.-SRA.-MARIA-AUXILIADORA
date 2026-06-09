@@ -1,8 +1,11 @@
 package com.mariaauxiliadora.stock.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
 
 /**
  * Línea de detalle de un pedido: producto y cantidad solicitada.
@@ -29,6 +32,11 @@ public class DetallePedido {
     @Column(nullable = false)
     private Integer cantidad;
 
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = true)
+    @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioUnitario;
+
     // ── Constructors ──────────────────────────────────────────────────────────
 
     public DetallePedido() {}
@@ -36,6 +44,7 @@ public class DetallePedido {
     public DetallePedido(Producto producto, Integer cantidad) {
         this.producto = producto;
         this.cantidad = cantidad;
+        this.precioUnitario = producto.getPrecio();
     }
 
     // ── Getters & Setters ─────────────────────────────────────────────────────
@@ -50,4 +59,14 @@ public class DetallePedido {
 
     public Integer getCantidad() { return cantidad; }
     public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+
+    public BigDecimal getPrecioUnitario() { return precioUnitario; }
+    public void setPrecioUnitario(BigDecimal precioUnitario) { this.precioUnitario = precioUnitario; }
+
+    public BigDecimal getSubtotal() {
+        if (precioUnitario == null || cantidad == null) {
+            return BigDecimal.ZERO;
+        }
+        return precioUnitario.multiply(BigDecimal.valueOf(cantidad));
+    }
 }

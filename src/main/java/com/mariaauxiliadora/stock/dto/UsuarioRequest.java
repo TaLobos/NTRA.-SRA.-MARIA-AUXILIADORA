@@ -1,72 +1,52 @@
-package com.mariaauxiliadora.stock.entity;
+package com.mariaauxiliadora.stock.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
- * Usuario registrado en el sistema (ADMIN o CLIENTE).
+ * Datos necesarios para registrar o actualizar un cliente.
  */
-@Entity
-@Table(name = "usuarios")
-public class Usuario {
-
-    public enum Rol { ADMIN, CLIENTE }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class UsuarioRequest {
 
     @NotBlank
-    @Column(nullable = false, length = 100)
+    @Size(max = 100)
     private String nombre;
 
     @NotBlank
-    @Column(nullable = false, length = 100)
+    @Size(max = 100)
     private String apellido;
 
-    @Column(length = 255)
+    @Size(max = 255)
     private String organizacion;
 
     @NotBlank
-    @Column(nullable = false, length = 100)
+    @Size(max = 100)
     private String pais;
 
     @NotBlank
-    @Column(nullable = false, length = 100)
+    @Size(max = 100)
     private String provincia;
 
     @NotBlank
-    @Column(nullable = false, length = 100)
+    @Size(max = 100)
     private String ciudad;
 
     @NotBlank
-    @Column(nullable = false, length = 255)
+    @Size(max = 255)
     private String direccion;
 
     @NotBlank
-    @Column(name = "codigo_postal", nullable = false, length = 20)
+    @Size(max = 20)
     private String codigoPostal;
 
     @Email
     @NotBlank
-    @Column(nullable = false, unique = true, length = 255)
+    @Size(max = 255)
     private String email;
 
-    @Column(length = 30)
+    @Size(max = 30)
     private String telefono;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private Rol rol = Rol.CLIENTE;
-
-    // ── Constructors ──────────────────────────────────────────────────────────
-
-    public Usuario() {}
-
-    // ── Getters & Setters ─────────────────────────────────────────────────────
-
-    public Long getId() { return id; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -97,7 +77,4 @@ public class Usuario {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
-
-    public Rol getRol() { return rol; }
-    public void setRol(Rol rol) { this.rol = rol; }
 }

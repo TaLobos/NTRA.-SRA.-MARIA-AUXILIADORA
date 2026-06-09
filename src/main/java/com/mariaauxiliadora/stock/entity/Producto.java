@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Producto disponible en el stock físico.
@@ -36,6 +38,18 @@ public class Producto {
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity;
 
+    @ElementCollection
+    @CollectionTable(name = "producto_fotos", joinColumns = @JoinColumn(name = "producto_id"))
+    @OrderColumn(name = "posicion")
+    @Column(name = "url", nullable = false, length = 500)
+    private List<String> fotos = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "producto_caracteristicas", joinColumns = @JoinColumn(name = "producto_id"))
+    @OrderColumn(name = "posicion")
+    @Column(name = "caracteristica", nullable = false, length = 500)
+    private List<String> caracteristicas = new ArrayList<>();
+
     // ── Constructors ──────────────────────────────────────────────────────────
 
     public Producto() {}
@@ -62,4 +76,14 @@ public class Producto {
 
     public Integer getStockQuantity() { return stockQuantity; }
     public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
+
+    public List<String> getFotos() { return fotos; }
+    public void setFotos(List<String> fotos) {
+        this.fotos = fotos == null ? new ArrayList<>() : new ArrayList<>(fotos);
+    }
+
+    public List<String> getCaracteristicas() { return caracteristicas; }
+    public void setCaracteristicas(List<String> caracteristicas) {
+        this.caracteristicas = caracteristicas == null ? new ArrayList<>() : new ArrayList<>(caracteristicas);
+    }
 }
